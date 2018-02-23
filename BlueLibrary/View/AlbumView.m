@@ -34,8 +34,8 @@
     [self addSubview:indicator];
     
     // KVO
-    //[coverImage addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    [coverImage addObserver:self forKeyPath:@"image" options:0 context:nil];
+    [coverImage addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+    //[coverImage addObserver:self forKeyPath:@"image" options:0 context:nil];
     
     // Notification
     [[NSNotificationCenter defaultCenter] postNotificationName:@"BLDownloadImageNotification" object:self userInfo:@{@"coverUrl":albumCover,@"imageView":coverImage}];
@@ -47,10 +47,11 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
   if ([keyPath isEqualToString:@"image"]){
-    [indicator stopAnimating];
     NSLog(@"image old value -%@", [change objectForKey:NSKeyValueChangeOldKey]);
     NSLog(@"image new value -%@", [change objectForKey:NSKeyValueChangeNewKey]);
-    
+    id newValue = [change objectForKey:NSKeyValueChangeNewKey];
+    if (newValue != nil)
+      [indicator stopAnimating];
   }
 }
 
