@@ -31,7 +31,7 @@
   if (self) {
     scroller = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     scroller.delegate = self;
-    UITapGestureRecognizer *gestureReconizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollTapped:)];
+    UITapGestureRecognizer *gestureReconizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollerTapped:)];
     [scroller addGestureRecognizer:gestureReconizer];
     [self addSubview:scroller];
   }
@@ -52,8 +52,6 @@
     UIView *view = scroller.subviews[index];
     if (CGRectContainsPoint(view.frame, location)) {
       [self.delegate horizontalScroller:self clickedViewAtIndex:index];
-      
-      #warning Try to change this to self.center.x;
       CGPoint offset = CGPointMake(view.frame.origin.x - self.frame.size.width/2 + view.frame.size.width/2, 0);
       [scroller setContentOffset:offset animated:YES];
       break;
@@ -97,7 +95,7 @@
   }
   
   // 5
-  [scroller setContentSize:CGSizeMake(xValue + VIEW_OFFSET, self.frame.size.height)];
+  [scroller setContentSize:CGSizeMake(xValue +VIEW_OFFSET, self.frame.size.height)];
   
   // 6 - If there is initial view we center this in scroller:
   if ([self.delegate respondsToSelector:@selector(initialViewIndexForHorizontalScroller:)]) {
@@ -112,9 +110,22 @@
 - (void)centerCurrentView {
   int xFinal = scroller.contentOffset.x + (VIEW_OFFSET / 2) + VIEW_PADDING;
   int viewIndex = xFinal / (VIEW_DIMENSIONS + (2 * VIEW_PADDING));
-  xFinal = viewIndex * (VIEW_DIMENSIONS + (2 * VIEW_PADDING));
-  [scroller setContentOffset:CGPointMake(xFinal, 0) animated:YES];
-  [self.delegate horizontalScroller:self clickedViewAtIndex:viewIndex];
+  //xFinal = viewIndex * (VIEW_DIMENSIONS + (2 * VIEW_PADDING));
+  //[scroller setContentOffset:CGPointMake(xFinal, 0) animated:YES];
+
+  
+//  UIView *view = [self.delegate horizontalScroller:self viewAtIndex:viewIndex];
+//  CGPoint offset = CGPointMake(view.frame.origin.x - self.frame.size.width/2 + view.frame.size.width/2, 0);
+//  [scroller setContentOffset:offset animated:YES];
+  
+  for (int index = 0; index < [self.delegate numberOfViewsForHorizontalScroller:self]; index ++) {
+    UIView *view = scroller.subviews[viewIndex];
+    [self.delegate horizontalScroller:self clickedViewAtIndex:index];
+    CGPoint offset = CGPointMake(view.frame.origin.x - self.frame.size.width/2 + view.frame.size.width/2, 0);
+    [scroller setContentOffset:offset animated:YES];
+    [self.delegate horizontalScroller:self clickedViewAtIndex:viewIndex];
+    break;
+  }
 }
 
 @end

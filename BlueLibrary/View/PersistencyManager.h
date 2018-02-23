@@ -13,5 +13,7 @@
 - (NSArray*)albums;
 - (void)addAlbum:(Album*)album atIndex:(NSUInteger)index;
 - (void)deleteAlbumAtIndex:(NSUInteger)index;
+- (void)saveImage:(UIImage *)image fileName:(NSString*)fileName;
+- (UIImage *)getImage:(NSString *)fileName;
 
 @end

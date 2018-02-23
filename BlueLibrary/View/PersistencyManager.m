@@ -42,6 +42,26 @@
                                               [[Album alloc] initWithTitle:@"American Pie"
                                                                     artist:@"Madonna"
                                                                   coverUrl:@"https://s3.amazonaws.com/CoverProject/album/album_madonna_american_pie.png"
+                                                                      year:@"2000"],
+                                              
+                                              [[Album alloc] initWithTitle:@"It's My Life"
+                                                                    artist:@"No Doubt"
+                                                                  coverUrl:@"https://s3.amazonaws.com/CoverProject/album/album_no_doubt_its_my_life_bathwater.png"
+                                                                      year:@"2003"],
+                                              
+                                              [[Album alloc] initWithTitle:@"Nothing Like The Sun"
+                                                                    artist:@"Sting"
+                                                                  coverUrl:@"https://s3.amazonaws.com/CoverProject/album/album_sting_nothing_like_the_sun.png"
+                                                                      year:@"1999"],
+                                              
+                                              [[Album alloc] initWithTitle:@"Staring at the Sun"
+                                                                    artist:@"U2"
+                                                                  coverUrl:@"https://s3.amazonaws.com/CoverProject/album/album_u2_staring_at_the_sun.png"
+                                                                      year:@"2000"],
+                                              
+                                              [[Album alloc] initWithTitle:@"American Pie"
+                                                                    artist:@"Madonna"
+                                                                  coverUrl:@"https://s3.amazonaws.com/CoverProject/album/album_madonna_american_pie.png"
                                                                       year:@"2000"]]];
   }
   return self;
@@ -61,6 +81,21 @@
 
 - (void)deleteAlbumAtIndex:(NSUInteger)index {
   [albums removeObjectAtIndex:index];
+}
+
+- (void)saveImage:(UIImage *)image fileName:(NSString *)filename {
+  filename = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%@", filename];
+  NSData *data = UIImagePNGRepresentation(image);
+  [data writeToFile:filename atomically:YES];
+}
+
+- (nullable UIImage *)getImage:(NSString *)fileName {
+  fileName = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%@", fileName];
+  NSData *data = [NSData dataWithContentsOfFile:fileName];
+  if (data != nil)
+    return [UIImage imageWithData:data];
+  else
+    return nil;
 }
 
 @end
