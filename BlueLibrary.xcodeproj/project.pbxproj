@@ -25,6 +25,7 @@
 		D02C4BF9203A8E17002553B7 /* LibraryAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = D02C4BF8203A8E17002553B7 /* LibraryAPI.m */; };
 		D02C4BFC203A8FD4002553B7 /* PersistencyManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D02C4BFB203A8FD4002553B7 /* PersistencyManager.m */; };
 		D02C4BFF203AAB65002553B7 /* Album+TableRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = D02C4BFE203AAB65002553B7 /* Album+TableRepresentation.m */; };
+		D06F5DA9203D440900BDCBE6 /* HorizontalScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = D06F5DA8203D440900BDCBE6 /* HorizontalScroller.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,8 @@
 		D02C4BFB203A8FD4002553B7 /* PersistencyManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PersistencyManager.m; path = BlueLibrary/View/PersistencyManager.m; sourceTree = SOURCE_ROOT; };
 		D02C4BFD203AAB65002553B7 /* Album+TableRepresentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Album+TableRepresentation.h"; sourceTree = "<group>"; };
 		D02C4BFE203AAB65002553B7 /* Album+TableRepresentation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Album+TableRepresentation.m"; sourceTree = "<group>"; };
+		D06F5DA7203D440900BDCBE6 /* HorizontalScroller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HorizontalScroller.h; sourceTree = "<group>"; };
+		D06F5DA8203D440900BDCBE6 /* HorizontalScroller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HorizontalScroller.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +145,8 @@
 			children = (
 				D02C4BF1203A8C5A002553B7 /* AlbumView.h */,
 				D02C4BF2203A8C5A002553B7 /* AlbumView.m */,
+				D06F5DA7203D440900BDCBE6 /* HorizontalScroller.h */,
+				D06F5DA8203D440900BDCBE6 /* HorizontalScroller.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -264,6 +269,7 @@
 				D02C4BF6203A8D95002553B7 /* HTTPClient.m in Sources */,
 				D02C4BFC203A8FD4002553B7 /* PersistencyManager.m in Sources */,
 				D02C4BF9203A8E17002553B7 /* LibraryAPI.m in Sources */,
+				D06F5DA9203D440900BDCBE6 /* HorizontalScroller.m in Sources */,
 				D02C4BF3203A8C5A002553B7 /* AlbumView.m in Sources */,
 				D02C4BFF203AAB65002553B7 /* Album+TableRepresentation.m in Sources */,
 				D02C4BE9203A8BC6002553B7 /* main.m in Sources */,

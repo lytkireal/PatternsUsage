@@ -11,6 +11,5 @@
 @interface Album (TableRepresentation)
 
 - (NSDictionary *)tr_tableRepresentation;
-- (NSString*)lala;
 
 @end
