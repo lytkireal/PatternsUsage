@@ -25,43 +25,62 @@
 
 @implementation ViewController
 
+#pragma mark - Lifecycle
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - View Lifecycle
+
 - (void)viewDidLoad
 {
   [super viewDidLoad];
   // 1
-  self.view.backgroundColor = [UIColor colorWithRed:0.76f green:0.81f blue:0.87f alpha:1.f];
+  self.view.backgroundColor = [UIColor colorWithRed:0.76f
+                                              green:0.81f
+                                               blue:0.87f
+                                              alpha:1.f];
   _currentAlbumIndex = 0;
   
   //2
   _allAlbums = [[LibraryAPI sharedInstance] albums];
   
-  // 3 UITableView
+  // 3 - UITableView
   CGRect frame = CGRectMake(0, 120, self.view.frame.size.width, self.view.frame.size.height - 120);
-  _dataTable = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+  _dataTable = [[UITableView alloc] initWithFrame:frame
+                                            style:UITableViewStyleGrouped];
   _dataTable.delegate = self;
   _dataTable.dataSource = self;
   _dataTable.backgroundView = nil;
   [self.view addSubview:_dataTable];
   
-  // 3.1 HorizontalScroller
+  // 3.0 - Load previous state
+  [self loadPreviousState];
+  
+  // 3.1 - HorizontalScroller
   scroller = [[HorizontalScroller alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 120)];
-  scroller.backgroundColor = [UIColor colorWithRed:0.24 green:0.35 blue:0.49 alpha:1];
+  scroller.backgroundColor = [UIColor colorWithRed:0.24
+                                             green:0.35
+                                              blue:0.49
+                                             alpha:1];
   scroller.delegate = self;
   [self.view addSubview:scroller];
   [self reloadScroller];
   
   // 4
   [self showDataForAlbumAtIndex:_currentAlbumIndex];
-}
-
-- (void)showDataForAlbumAtIndex:(int)albumIndex {
-  if (albumIndex < _allAlbums.count) {
-    Album *album = _allAlbums[albumIndex];
-    _currentAlbumData = [album tr_tableRepresentation];
-  } else {
-    _currentAlbumData = nil;
-  }
-  [_dataTable reloadData];
+  
+  // 5 - Add observer to listen when app goes to background:
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(saveCurrentState)
+                                               name:UIApplicationDidEnterBackgroundNotification
+                                             object:nil];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(saveCurrentState)
+                                               name:UIApplicationWillTerminateNotification
+                                             object:nil];
 }
 
 #pragma mark - UITableViewDataSource
@@ -91,6 +110,10 @@
 
 #pragma mark - HorizontalSroller delegates
 
+- (NSInteger)initialViewIndexForHorizontalScroller:(HorizontalScroller *)scroller {
+  return _currentAlbumIndex;
+}
+
 - (void)horizontalScroller:(HorizontalScroller *)scroller clickedViewAtIndex:(int)index {
   _currentAlbumIndex = index;
   [self showDataForAlbumAtIndex:index];
@@ -102,10 +125,21 @@
 
 - (UIView *)horizontalScroller:(HorizontalScroller *)scroller viewAtIndex:(int)index {
   Album *album = _allAlbums[index];
-  return [[AlbumView alloc] initWithFrame:CGRectMake(0, 0, 100, 100) albumCover:album.coverUrl];
+  return [[AlbumView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)
+                               albumCover:album.coverUrl];
 }
 
 #pragma mark - Helpers
+
+- (void)showDataForAlbumAtIndex:(int)albumIndex {
+  if (albumIndex < _allAlbums.count) {
+    Album *album = _allAlbums[albumIndex];
+    _currentAlbumData = [album tr_tableRepresentation];
+  } else {
+    _currentAlbumData = nil;
+  }
+  [_dataTable reloadData];
+}
 
 - (void)reloadScroller {
   _allAlbums = [[LibraryAPI sharedInstance] albums];
@@ -114,6 +148,17 @@
   else if (_currentAlbumIndex >= _allAlbums.count)
     _currentAlbumIndex = (int)_allAlbums.count - 1;
   [scroller reload];
+  [self showDataForAlbumAtIndex:_currentAlbumIndex];
+}
+
+- (void)saveCurrentState {
+  [[NSUserDefaults standardUserDefaults] setInteger:_currentAlbumIndex
+                                             forKey:@"currentAlbumIndex"];
+  [[LibraryAPI sharedInstance] saveAlbums];
+}
+
+- (void)loadPreviousState {
+  _currentAlbumIndex = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"currentAlbumIndex"];
   [self showDataForAlbumAtIndex:_currentAlbumIndex];
 }
 

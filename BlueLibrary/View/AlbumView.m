@@ -35,7 +35,6 @@
     
     // KVO
     [coverImage addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    //[coverImage addObserver:self forKeyPath:@"image" options:0 context:nil];
     
     // Notification
     [[NSNotificationCenter defaultCenter] postNotificationName:@"BLDownloadImageNotification" object:self userInfo:@{@"coverUrl":albumCover,@"imageView":coverImage}];

@@ -94,6 +94,10 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)saveAlbums {
+  [_persistencyManager saveAlbums];
+}
+
 @end
 
 

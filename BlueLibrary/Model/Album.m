@@ -13,8 +13,8 @@
 - (id)initWithTitle:(NSString *)title
              artist:(NSString *)artist
            coverUrl:(NSString *)coverUrl
-               year:(NSString *)year
-{
+               year:(NSString *)year {
+  
   self = [super init];
   if (self)
   {
@@ -26,5 +26,27 @@
   }
   return self;
 }
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+  [aCoder encodeObject:self.year forKey:@"year"];
+  [aCoder encodeObject:self.title forKey:@"title"];
+  [aCoder encodeObject:self.artist forKey:@"artist"];
+  [aCoder encodeObject:self.coverUrl forKey:@"coverUrl"];
+  [aCoder encodeObject:self.genre forKey:@"genre"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+  self = [super init];
+  if (self) {
+    _year = [aDecoder decodeObjectForKey:@"year"];
+    _title = [aDecoder decodeObjectForKey:@"title"];
+    _artist = [aDecoder decodeObjectForKey:@"artist"];
+    _coverUrl = [aDecoder decodeObjectForKey:@"coverUrl"];
+    _genre = [aDecoder decodeObjectForKey:@"genre"];
+  }
+  return self;
+}
+
+
 
 @end

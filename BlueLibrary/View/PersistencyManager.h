@@ -15,5 +15,6 @@
 - (void)deleteAlbumAtIndex:(NSUInteger)index;
 - (void)saveImage:(UIImage *)image fileName:(NSString*)fileName;
 - (UIImage *)getImage:(NSString *)fileName;
+- (void)saveAlbums;
 
 @end
