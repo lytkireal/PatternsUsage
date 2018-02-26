@@ -19,6 +19,8 @@
   NSDictionary *_currentAlbumData;
   int _currentAlbumIndex;
   HorizontalScroller *scroller;
+  UIToolbar *_toolbar;
+  NSMutableArray *_undoStack;// array of cancel actions, on which we will execute push&pop operations;
 }
 
 @end
@@ -43,6 +45,18 @@
                                               alpha:1.f];
   _currentAlbumIndex = 0;
   
+  _toolbar = [[UIToolbar alloc] init];
+  UIBarButtonItem *undoItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo target:self action:@selector(undoAction)];
+  undoItem.enabled = NO;
+  
+  UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  
+  UIBarButtonItem *delete = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteAlbum)];
+  
+  [_toolbar setItems:@[undoItem, space, delete]];
+  [self.view addSubview:_toolbar];
+  
+  _undoStack = [NSMutableArray new];
   //2
   _allAlbums = [[LibraryAPI sharedInstance] albums];
   
@@ -81,6 +95,56 @@
                                            selector:@selector(saveCurrentState)
                                                name:UIApplicationWillTerminateNotification
                                              object:nil];
+}
+
+- (void)viewWillLayoutSubviews {
+  _toolbar.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
+  _dataTable.frame = CGRectMake(0, 130, self.view.frame.size.width, self.view.frame.size.height - 200);
+}
+
+#pragma mark - User interaction
+
+- (void)addAlbum:(Album *)album atIndex:(int)index {
+  [[LibraryAPI sharedInstance] addAlbum:album atIndex:index];
+  _currentAlbumIndex = index;
+  [self reloadScroller];
+}
+
+- (void)deleteAlbum {
+  // 1
+  Album *deletedAlbum = _allAlbums[_currentAlbumIndex];
+  
+  // 2
+  NSMethodSignature *sig = [self methodSignatureForSelector:@selector(addAlbum:atIndex:)];
+  NSInvocation *undoDeleteAction = [NSInvocation invocationWithMethodSignature:sig];
+  [undoDeleteAction setTarget:self];
+  [undoDeleteAction setSelector:@selector(addAlbum:atIndex:)];
+  [undoDeleteAction setArgument:&deletedAlbum atIndex:2];
+  [undoDeleteAction setArgument:&_currentAlbumIndex atIndex:3];
+  [undoDeleteAction retainArguments];
+  
+  // 3
+  [_undoStack addObject: undoDeleteAction];
+  
+  // 4
+  [[LibraryAPI sharedInstance] deleteAlbumAtIndex:_currentAlbumIndex];
+  [self reloadScroller];
+  
+  // 5
+  [_toolbar.items[0] setEnabled:YES];
+  
+}
+
+- (void)undoAction {
+  if (_undoStack > 0) {
+    NSInvocation *undoAction = [_undoStack lastObject];
+    [_undoStack removeLastObject];
+    [undoAction invoke];
+  }
+  
+  if (_undoStack == 0) {
+    [_toolbar.items[0] setEnabled:NO];
+  }
 }
 
 #pragma mark - UITableViewDataSource
